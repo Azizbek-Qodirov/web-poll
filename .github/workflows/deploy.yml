@@ -1,4 +1,4 @@
-name: Web polling service
+name: Web polling service 
 
 on:
   push:
