@@ -30,6 +30,7 @@ jobs:
           echo ---------------- DIR CHANGED TO POLLING ----------------
           sudo docker compose down
           echo ---------------- DOWN POLLING ----------------
+          sudo docker compose up --build -d
           sudo docker compose up -d
           echo ---------------- UP POLLING ----------------
 
@@ -37,6 +38,7 @@ jobs:
           echo ---------------- DIR CHANGED TO API-GATEWAY ----------------
           sudo docker compose down
           echo ---------------- DOWN API-GATEWAY ----------------
+          sudo docker compose up --build -d
           sudo docker compose up -d
           echo ---------------- UP API-GATEWAY ----------------
 
@@ -44,5 +46,6 @@ jobs:
           echo ---------------- DIR CHANGED TO API-GATEWAY-USER ----------------
           sudo docker compose down
           echo ---------------- DOWN API-GATEWAY-USER ----------------
+          sudo docker compose up --build -d
           sudo docker compose up -d
           echo ---------------- UP API-GATEWAY-USER ----------------
