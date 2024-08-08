@@ -29,7 +29,7 @@ import (
 func (h *HTTPHandler) Register(c *gin.Context) {
 	var req pb.RegisterReqForSwagger
 	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Invalid request payload": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload", "details": err.Error()})
 		return
 	}
 
@@ -44,13 +44,13 @@ func (h *HTTPHandler) Register(c *gin.Context) {
 	}
 
 	if err := config.IsValidPassword(req.Password); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Password is not valid", "details": err.Error()})
 		return
 	}
 
 	hashedPassword, err := config.HashPassword(req.Password)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error", "err": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Couldn't hash password", "details": err.Error()})
 	}
 
 	req.Password = string(hashedPassword)
@@ -61,7 +61,8 @@ func (h *HTTPHandler) Register(c *gin.Context) {
 	} else if req.Gender == "female" {
 		gender = 1
 	} else {
-		c.JSON(400, "Invalid gender format")
+		c.JSON(http.StatusBadRequest, "Invalid gender format")
+		return
 	}
 
 	_, err = h.User.Register(c,
@@ -73,20 +74,20 @@ func (h *HTTPHandler) Register(c *gin.Context) {
 			Gender:            pb.GenderType(gender),
 			PhoneNumber:       req.PhoneNumber,
 			WorkingExperience: req.WorkingExperience,
-			LevelType:             req.LevelType,
+			LevelType:         req.LevelType,
 		})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error", "err": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Couldn't register user", "details": err.Error()})
 		return
 	}
 
 	err = h.SendConfirmationCode(req.Email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error sending confirmation code", "err": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error sending confirmation code", "details": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Your account has been registered. Please check your email for a confirmation link. You have 3 minutes to confirm your account."})
+	c.JSON(http.StatusOK, gin.H{"message": "Your account is registered now. Please check your email for a confirmation link. You have 3 minutes to confirm your account."})
 }
 
 // ConfirmRegistration godoc
@@ -104,7 +105,7 @@ func (h *HTTPHandler) Register(c *gin.Context) {
 func (h *HTTPHandler) ConfirmRegistration(c *gin.Context) {
 	var req models.ConfirmRegistrationReq
 	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Invalid request payload": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload", "details": err.Error()})
 		return
 	}
 

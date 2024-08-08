@@ -79,7 +79,7 @@ func (m *ResultManager) GetResultsInExcel(ctx context.Context, req *pb.Void) (*p
 			Email:             email,
 			PhoneNumber:       phoneNumber,
 			WorkingExperience: workingExperience,
-			LevelType:             level_type,
+			LevelType:         level_type,
 		}
 
 		resultKey := name + surname + string(pollNum)
