@@ -19,6 +19,7 @@ import (
 func NewRouter(PollConn *grpc.ClientConn) *gin.Engine {
 	router := gin.Default()
 	h := handlers.NewHandler(PollConn)
+	router.Use(CORSMiddleware())
 
 	router.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -32,6 +33,10 @@ func NewRouter(PollConn *grpc.ClientConn) *gin.Engine {
 	protected := router.Group("/", middleware.JWTMiddleware())
 	protected.GET("/profile", h.Profile)
 	router.GET("/user/:id", h.GetByID)
+
+	// #################### USER SERVICE ######################### //
+	for_user := protected.Group("/", middleware.IsUserMiddleware())
+	for_user.POST("/send-answers", h.SendAnswers)
 
 	// #################### POLLING SERVICE ######################### //
 	for_admin := protected.Group("/", middleware.IsAdminMiddleware())
@@ -58,4 +63,22 @@ func NewRouter(PollConn *grpc.ClientConn) *gin.Engine {
 	for_admin.GET("/questions", h.GetAllQuestions)
 
 	return router
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Content-Type", "application/json")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Max")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }

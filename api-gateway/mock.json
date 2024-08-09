@@ -1,12 +1,12 @@
 [
     {
-        "email": "qodirovazizbek249@gmail.com",
+        "email": "xma84228@zccck.com",
         "gender": "male",
         "level_type": "junior",
-        "name": "Azizbek",
+        "name": "Wor",
         "password": "#Password7777",
         "phone_number": "+998888888888",
-        "surname": "Qodirov",
+        "surname": "Eti",
         "working_experience": 2
     },
     {
@@ -23,10 +23,11 @@
         "num": 1,
         "poll_id": "1509efa1-58af-4e02-82f2-4823d7ef9fab"
     },
+
     [
         {
             "poll_id": "e3a2920e-8f23-4603-8086-3dfd8cffaffb",
-            "user_id": "2525acff-6bd0-4426-a6eb-eba5cbb94780",
+            "user_id": "faeda097-53fb-49ef-b4b3-32677305d933",
             "answers": [
                 {
                     "num": 1,
@@ -47,28 +48,29 @@
                 },
                 {
                     "num": 5,
-                    "answer_point": 2
-                },
-                {
-                    "num": 6,
-                    "answer_point": 3
-                },
-                {
-                    "num": 7,
-                    "answer_point": 2
-                },
-                {
-                    "num": 8,
                     "answer_point": 1
                 },
                 {
-                    "num": 9,
+                    "num": 6,
+                    "answer_point": 2
+                },
+                {
+                    "num": 7,
+                    "answer_point": 1
+                },
+                {
+                    "num": 8,
                     "answer_point": 3
+                },
+                {
+                    "num": 9,
+                    "answer_point": 1
                 },
                 {
                     "num": 10,
                     "answer_point": 2
                 }
+                
             ]
         }
     ]
