@@ -25,12 +25,8 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           echo "---------------- PULLING CODE FROM GITHUB ----------------"
-          echo |                                                          |
-          echo |                                                          |
           cd web-poll
           git pull origin main
-          echo |                                                          |
-          echo |                                                          |
           echo "---------------- CODE PULLED FROM GITHUB -----------------"
 
           echo "---------------- NAVIGATING TO POLLING DIRECTORY ----------------"
