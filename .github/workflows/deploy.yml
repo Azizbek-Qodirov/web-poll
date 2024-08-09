@@ -1,4 +1,4 @@
-name: Web Polling Service 
+name: Web Polling Service
 
 on:
   push:
@@ -9,18 +9,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout our repository
-      uses: actions/checkout@v4
 
-    - name: Deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PASSWORD }}
-        port: ${{ secrets.SSH_PORT }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
         script: |
           # Define ANSI color codes
           RED='\033[0;31m'
@@ -29,25 +29,36 @@ jobs:
           BLUE='\033[0;34m'
           NC='\033[0m' # No Color
 
-          echo -e "${YELLOW}---------------- PULLING CODE FROM GITHUB ----------------${NC}"
+          function log_info {
+            echo -e "${YELLOW}$1${NC}"
+          }
+
+          function log_success {
+            echo -e "${GREEN}$1${NC}"
+          }
+
+          function log_error {
+            echo -e "${RED}$1${NC}"
+          }
+
+          # Pull latest code from GitHub
+          log_info "---------------- PULLING CODE FROM GITHUB ----------------"
           cd web-poll
           git pull origin main
-          echo -e "${GREEN}---------------- CODE PULLED FROM GITHUB -----------------${NC}"
+          log_success "---------------- CODE PULLED FROM GITHUB -----------------"
 
-          echo -e "${YELLOW}---------------- NAVIGATING TO POLLING DIRECTORY ----------------${NC}"
+          # Restart polling service
+          log_info "---------------- NAVIGATING TO POLLING DIRECTORY ----------------"
           cd polling
-          
           sudo docker compose down
-          echo -e "${RED}---------------- POLLING SERVICES STOPPED ----------------${NC}"
-          
+          log_error "---------------- POLLING SERVICES STOPPED ----------------"
           sudo docker compose up --build -d
-          echo -e "${GREEN}---------------- POLLING SERVICES STARTED ----------------${NC}"
+          log_success "---------------- POLLING SERVICES STARTED ----------------"
 
-          echo -e "${YELLOW}---------------- NAVIGATING TO API-GATEWAY DIRECTORY ----------------${NC}"
+          # Restart API Gateway service
+          log_info "---------------- NAVIGATING TO API-GATEWAY DIRECTORY ----------------"
           cd ../api-gateway
-          
           sudo docker compose down
-          echo -e "${RED}---------------- API-GATEWAY SERVICES STOPPED ----------------${NC}"
-          
+          log_error "---------------- API-GATEWAY SERVICES STOPPED ----------------"
           sudo docker compose up --build -d
-          echo -e "${GREEN}---------------- API-GATEWAY SERVICES STARTED ----------------${NC}"
+          log_success "---------------- API-GATEWAY SERVICES STARTED ----------------"
